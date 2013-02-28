@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      
+      
+      body, html
+      {
+        width:100%;
+        margin:0;
+        font-family:Arial, Helvetica, sans-serif;
+      }
+      
+      #container      
+      {
+        margin:10px; 
+      }
+      
+      #css-mobile
+      {
+        float: right;
+        display:none;
+        font-size: 10px;
+        padding: 8px;
+        background:#E7FFE4;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 10px; /* future proofing */
+        -khtml-border-radius: 10px; /* for old Konqueror browsers */
+        border: solid 1px #8ebb88;
+      }
+      .m
+      {
+        color: #000;
+      }
+      
+      .d
+      {
+        
+      }
+      
+      .t
+      {
+        background: #e7ffe4;
+      }
+      
+      .is-bold
+      {
+        
+      }
+      
+      #data
+      {
+        width:100%;
+        margin-top: 10px;
+        color: #444;
+      }
+      
+      #data td
+      {
+        padding: 4px;
+        border: dotted 1px #000;
+      }
+      
+      .logo
+      {
+        display: block;
+        background: url( img/logo.png ) no-repeat;
+        width: 319px;
+        height: 50px;
+        text-indent: -9999px;
+      }
+      
+      @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+        only screen and (-o-min-device-pixel-ratio: 3/2),
+        only screen and (min--moz-device-pixel-ratio: 1.5),
+        only screen and (min-device-pixel-ratio: 1.5) {
+          
+          .logo {background-image:url(img/logo@2x.png);
+               -moz-background-size:319px 50px;
+                -ie-background-size:319px 50px;
+                 -o-background-size:319px 50px;
+            -webkit-background-size:319px 50px;
+                    background-size:319px 50px;
+          }
+          
+      }
+      
+      @media only screen and (min-device-width : 320px) and (max-device-width : 480px) 
+      {
+        #css-mobile { display:block; }
+      }
+      
+    </style>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <title>mdetect</title>
+    
+  </head>
+
+  <body>
+    <div id="container">
+      <div id="css-mobile">MOBILE CSS</div>
+      <div class="logo">jsMobileDetect</div>
+      <table id="data" cellpadding="0" cellspacing="0" border="0">
+      </table>
+    </div>
+    
+    <!-- scripts -->
+    
+    <script src="js/vendor/jquery-1.8.2.min.js"></script>
+    <script src="js/vendor/mobiledetect.js"></script>
+    <script>
+      $(document).ready(function()
+      {
+        if( MD.isIPad() ) $('.logo').attr('src' , 'img/logo@2x.png' );
+        
+        var data = [
+          { 'i' : 16 , 'm' : 'Client Width & Height'        , 'd' : document.documentElement.clientWidth +' x '+ document.documentElement.clientHeight },
+          { 'i' : 0  , 'm' : 'Agent Data'                   , 'd' : MD.getUserAgent() },
+          { 'i' : 1  , 'm' : 'Screen Width & Height'        , 'd' : screen.width +' x '+ screen.height },
+          { 'i' : 3  , 'm' : 'Window Width & Height'        , 'd' : $(window).width() +' x '+ $(window).height() },
+          { 'i' : 4  , 'm' : 'Window Inner Width & Height'  , 'd' : $(window).innerWidth() +' x '+ $(window).innerHeight() },
+          { 'i' : 5  , 'm' : 'Is device supported'          , 'd' : MD.isDevice() , 'b' : true },
+          { 'i' : 6  , 'm' : 'Window Orientation'           , 'd' : ( window.orientation == undefined) ? 'Unknown' : window.orientation },
+          { 'i' : 7  , 'm' : 'Is Mobile Device'             , 'd' : MD.isMobileDevice() },
+          { 'i' : 8  , 'm' : 'Is Tablet Device'             , 'd' : MD.isTabletDevice() },
+          { 'i' : 9  , 'm' : 'Running iOS'                  , 'd' : MD.isIOS() },
+          { 'i' : 10 , 'm' : 'Is an iPhone/iPod Touch'      , 'd' : MD.isIPhone()  },
+          { 'i' : 11 , 'm' : 'Is an iPad'                   , 'd' : MD.isIPad() },
+          { 'i' : 12 , 'm' : 'Running Android'              , 'd' : MD.isAndroid() },
+          { 'i' : 13 , 'm' : 'Is an Android Mobile Device'  , 'd' : MD.isAndroidMobile() },
+          { 'i' : 14 , 'm' : 'Is Browser Mobile Safari'     , 'd' : MD.isBrowserSafari() },
+          { 'i' : 15 , 'm' : 'Is Browser Mobile Chrome'     , 'd' : MD.isBrowserChrome() },
+        ];
+        
+        for( var i = 0 ; i < data.length ; i++ )
+        {
+          var msg = data[ i ].m;
+          var dat = data[ i ].d;
+          var tclass = '';
+          
+          switch( data[ i ].i )
+          {
+            case 3 : tclass += ' winsize';
+                     break;
+            case 4 : tclass += ' winsize-inner';
+                     break;
+            case 6 : tclass += ' ori-pos';
+                     break;
+          }
+          
+          var d = '<tr class="'+ (( dat == true ) ? "t" : "") +'"><td class="m">'+ msg +'</td><td class="d'+ tclass +'">'+ dat +'</td></tr>';
+      
+          $('#data').append( d );
+        }
+        
+        $(window).resize( function()
+        {
+          $('.winsize').html( $(window).width() +' x '+ $(window).height() );
+          $('.winsize-inner').html( $(window).innerWidth() +' x '+ $(window).innerHeight() );
+        });
+                
+        if( window.orientation != undefined)
+        { 
+          var supportsOrientationChange = "onorientationchange" in window,
+            orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
+         
+          $(window).bind( orientationEvent , function(event) {
+           
+            if(window.orientation == 90 || window.orientation == -90 || window.orientation == 270) {
+              $('.ori-pos').html( window.orientation +' :: landscape' );
+            } else {
+              $('.ori-pos').html( window.orientation +' :: portrait' );
+            }
+          }).trigger( orientationEvent );
+          
+          if(window.orientation == 90 || window.orientation == -90 || window.orientation == 270) {
+            $('.ori-pos').html( window.orientation +' :: landscape' );
+          } else {
+            $('.ori-pos').html( window.orientation +' :: portrait' );
+          }
+        }
+        else
+        {
+          $('ori-pos').html( 'Unknown' );
+        }
+      });
+    </script>
+  </body>
+</html>
